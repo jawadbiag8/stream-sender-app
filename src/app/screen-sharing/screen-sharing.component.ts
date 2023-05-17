@@ -25,9 +25,18 @@ export class ScreenSharingComponent implements OnInit {
         video.onloadedmetadata = () => {
           video.play();
           setInterval(() => {
-            context.drawImage(video, 0, 0, this.canvas?.nativeElement.width, this.canvas?.nativeElement.height);
-            const imageData = this.canvas?.nativeElement.toDataURL('image/png');
-            socket.emit('stream', imageData);
+            const canvas = this.canvas?.nativeElement;
+            if (canvas) {
+              const width = video.videoWidth;
+              const height = video.videoHeight;
+  
+              canvas.width = width;
+              canvas.height = height;
+  
+              context?.drawImage(video, 0, 0, width, height);
+              const imageData = canvas.toDataURL('image/png');
+              socket.emit('stream', imageData);
+            }
           }, 100);
         };
       })
